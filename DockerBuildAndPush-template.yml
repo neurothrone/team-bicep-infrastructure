@@ -13,14 +13,14 @@ parameters:
   - name: imageRepository
     type: string
 
-pool:
-  vmImage: ubuntu-latest
-
 jobs:
   - job: DockerBuildAndPush
     displayName: Building ${{ parameters.projectName }}
+    pool:
+      vmImage: ubuntu-latest
     steps:
       - checkout: self
+      
       
       - task: Docker@2
         inputs:
