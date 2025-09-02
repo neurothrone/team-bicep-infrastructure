@@ -1,18 +1,24 @@
 trigger: none
+
 parameters:
   - name: projectName
     type: string
-  - name: projectPath
-    type: string
-  - name: repository
+
+  - name: dockerfilePath
     type: string
 
+  - name: contextPath
+    type: string
+
+  - name: imageRepository
+    type: string
+
+pool:
+  vmImage: ubuntu-latest
 
 jobs:
   - job: DockerBuildAndPush
-    displayName: Building ${{ parameters.projectName}}
-    pool:
-      vmImage: ubuntu-latest
+    displayName: Building ${{ parameters.projectName }}
     steps:
       - checkout: self
       
@@ -25,12 +31,9 @@ jobs:
       - task: Docker@2
         inputs:
           command: buildAndPush
-          repository: ${{ parameters.repo }}
           containerRegistry: 'dersimabbas'
-          buildContext: ${{ parameters.repository }}
-          Dockerfile: ${{ parameters.projectPath }}
+          repository: ${{ parameters.imageRepository }}
+          dockerfile: ${{ parameters.dockerfilePath }}
+          buildContext: ${{ parameters.contextPath }}
           tags: 'latest'
-
-
-      
 
