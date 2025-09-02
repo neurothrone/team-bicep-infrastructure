@@ -1,0 +1,36 @@
+trigger: none
+parameters:
+  - name: projectName
+    type: string
+  - name: projectPath
+    type: string
+  - name: repository
+    type: string
+
+
+jobs:
+  - job: DockerBuildAndPush
+    displayName: Building ${{ parameters.projectName}}
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - checkout: self
+      
+      - task: Docker@2
+        inputs:
+          command: login
+          containerRegistry: 'dersimabbas'
+        displayName: 'Logging into Azure Container Registry'
+      
+      - task: Docker@2
+        inputs:
+          command: buildAndPush
+          repository: ${{ parameters.repo }}
+          containerRegistry: 'dersimabbas'
+          buildContext: ${{ parameters.repository }}
+          Dockerfile: ${{ parameters.projectPath }}
+          tags: 'latest'
+
+
+      
+
