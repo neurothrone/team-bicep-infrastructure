@@ -1,3 +1,4 @@
+batch: true
 trigger: none
 
 name: Deploy Resources to Azure with Bicep using Resource Group scope
