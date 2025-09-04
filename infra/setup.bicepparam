@@ -1,17 +1,41 @@
 using 'main.bicep'
 
-param containerAppEnvironmentName = 'cae-team-bicep-prod'
-param logAnalyticsWorkspaceName = 'law-team-bicep-prod'
-param containerRegistryName = 'crteambicepprod'
-param keyVaultName = 'kv-teambicepprod'
+param logAnalyticsSettings = {
+  logAnalyticsWorkspaceName: 'law-team-bicep-prod'
+}
 
-param usePlaceHolderImage = true
+param containerRegistrySettings = {
+  containerRegistryName: 'crteambicepprod'
+  usePlaceHolderImage: true
+}
 
-param backendImage = 'crteambicepprod.azurecr.io/azuredocs/containerapps-helloworld:latest'
-param backendRevisionSuffix  = ''
+param containerAppEnvironmentSettings = {
+  containerAppEnvironmentName: 'cae-team-bicep-prod'
+  containerRegistryName: containerRegistrySettings.containerRegistryName
+  logAnalyticsWorkspaceName: logAnalyticsSettings.logAnalyticsWorkspaceName
+}
 
-param frontendImage = 'crteambicepprod.azurecr.io/azuredocs/containerapps-helloworld:latest'
-param frontendRevisionSuffix  = ''
+param keyVaultSettings = {
+  keyVaultName: 'kv-teambicepprod'
+}
+
+param backendSettings = {
+  backendContainerAppName: 'team-bicep-backend'
+  backendImageName: 'crteambicepprod.azurecr.io/azuredocs/containerapps-helloworld:latest'
+  backendRevisionSuffix: ''
+  containerAppEnvironmentName: containerAppEnvironmentSettings.containerAppEnvironmentName
+  containerRegistryName: containerRegistrySettings.containerRegistryName
+  keyVaultName: keyVaultSettings.keyVaultName
+}
+
+param frontendSettings = {
+  frontendContainerAppName: 'team-bicep-frontend'
+  frontendImageName: 'crteambicepprod.azurecr.io/azuredocs/containerapps-helloworld:latest'
+  frontendRevisionSuffix: ''
+  containerAppEnvironmentName: containerAppEnvironmentSettings.containerAppEnvironmentName
+  containerRegistryName: containerRegistrySettings.containerRegistryName
+  keyVaultName: keyVaultSettings.keyVaultName
+}
 
 param tags = {
   environment: 'prod'
