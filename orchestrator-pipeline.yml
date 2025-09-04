@@ -1,0 +1,51 @@
+trigger: none
+
+resources:
+  repositories:
+    - repository: infra
+      type: git
+      name: team-bicep-infrastructure
+      ref: refs/heads/main
+           
+    - repository: 
+      type: git
+      name: team-bicep-backend
+      ref: refs/heads/main
+      trigger:
+        branches:
+          include:
+            - main
+    
+    - repository: 
+      type: git
+      name: team-bicep-frontend
+      ref: refs/heads/main
+      trigger:
+        branches:
+          include:
+            - main
+
+stages:
+- stage: Backend
+  displayName: 'Backend'
+  dependsOn: Infra
+  jobs:
+  - template: DockerBuildAndPush-template.yml@infra
+    parameters:
+      projectName: 'TeamBicep.WebApi'
+      dockerfilePath: 'src/TeamBicep.WebApi/Dockerfile'
+      contextPath: 'src/TeamBicep.WebApi'
+      imageRepository: 'TeamBicep/Backend'
+     
+      
+
+- stage:
+- template: bicep-infra-create-template.yml@infra
+  parameters:
+    environment: 'prod'
+    serviceConnectionName: 'BicepDeploy'
+    resourceGroupName: 'RG-dersimabbas'
+    useEnvironmentSuffix: true
+    deploymentLocation: 'swedencentral'
+    stageName: 'Infra'
+
