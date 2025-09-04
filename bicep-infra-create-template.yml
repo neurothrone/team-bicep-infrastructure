@@ -37,7 +37,7 @@ parameters:
   - name: parametersFileName
     displayName: "Parameters File Name"
     type: string
-    default: $(System.DefaultWorkingDirectory)/infra/main.bicepparam
+    default: $(System.DefaultWorkingDirectory)/infra/main.prod.bicepparam
 
 
 jobs:
