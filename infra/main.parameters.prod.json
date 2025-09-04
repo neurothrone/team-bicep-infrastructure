@@ -1,0 +1,36 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appInsightsName": {
+      "value": "appi-team-bicep-prod"
+    },
+    "containerAppEnvironmentName": {
+      "value": "cae-team-bicep-prod"
+    },
+    "logAnalyticsWorkspaceName": {
+      "value": "law-team-bicep-prod"
+    },
+    "containerRegistryName": {
+      "value": "crteambicepprod"
+    },
+    "keyVaultName": {
+      "value": "kv-teambicepprod"
+    },
+    "backendImage": {
+      "value": "teambicep/backend:latest"
+    },
+    "frontendImage": {
+      "value": "teambicep/frontend:latest"
+    },
+    "tags": {
+      "value": {
+        "environment": "prod",
+        "owner": "Team Bicep",
+        "project": "team-bicep",
+        "costCenter": "IT",
+        "deployedBy": "Bicep"
+      }
+    }
+  }
+}
