@@ -15,7 +15,7 @@ parameters:
   - name: serviceConnectionName
     displayName: "Service Connection Name"
     type: string
-    default: "TeamBicepConnection"
+    default: "BicepDeploymentConnection"
 
   - name: environment
     displayName: "Environment"
