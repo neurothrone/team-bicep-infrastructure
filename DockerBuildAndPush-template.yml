@@ -40,5 +40,5 @@ jobs:
           repository: ${{ parameters.imageRepository }}
           dockerfile: ${{ parameters.dockerfilePath }}
           buildContext: ${{ parameters.contextPath }}
-          tags: 'latest'
+          tags: ${{ parameters.tag }}
 
