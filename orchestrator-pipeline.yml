@@ -50,5 +50,5 @@ stages:
       environment: 'prod'
       serviceConnectionName: 'biceparmconnection'
       resourceGroupName: 'RG-dersimabbas'
-      useEnvironmentSuffix: true
+      useEnvironmentSuffix: false
       deploymentLocation: 'swedencentral'
