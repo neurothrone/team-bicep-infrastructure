@@ -27,50 +27,51 @@ param tags object
 
 var containerAppName = 'team-bicep-frontend'
 
-resource env 'Microsoft.App/managedEnvironments@2024-08-02-preview' existing = {
+resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2024-08-02-preview' existing = {
   name: containerAppEnvironmentName
 }
 
-resource acr 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' existing = {
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' existing = {
   name: containerRegistryName
 }
 
-resource kv 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
   name: keyVaultName
 }
 
-resource pullMi 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource pullManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: 'mi-${uniqueString(resourceGroup().id, 'backend-pull')}'
   location: location
 }
-resource acrPull 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(acr.id, pullMi.id, acrPullRoleId)
-  scope: acr
+
+resource acrPullRoleAssigment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(containerRegistry.id, pullManagedIdentity.id, acrPullRoleId)
+  scope: containerRegistry
   properties: {
     #disable-next-line use-resource-id-functions
     roleDefinitionId: acrPullRoleId
-    principalId: pullMi.properties.principalId
+    principalId: pullManagedIdentity.properties.principalId
     principalType: 'ServicePrincipal'
   }
 }
 
-resource kvSecretsUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(kv.id, pullMi.id, kvSecretUserRoleId)
-  scope: kv
+resource keyVaultSecretsUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(keyVault.id, pullManagedIdentity.id, kvSecretUserRoleId)
+  scope: keyVault
   properties: {
     #disable-next-line use-resource-id-functions
     roleDefinitionId: kvSecretUserRoleId
-    principalId: pullMi.properties.principalId
+    principalId: pullManagedIdentity.properties.principalId
     principalType: 'ServicePrincipal'
   }
 }
 
-resource frontend 'Microsoft.App/containerApps@2024-08-02-preview' = {
+resource frontendContainerApp 'Microsoft.App/containerApps@2024-08-02-preview' = {
   name: containerAppName
   location: location
   tags: tags
   properties: {
-    managedEnvironmentId: env.id
+    managedEnvironmentId: containerAppEnvironment.id
     configuration: {
       activeRevisionsMode: 'Multiple'
       ingress: {
@@ -80,8 +81,8 @@ resource frontend 'Microsoft.App/containerApps@2024-08-02-preview' = {
       }
       registries: [
         {
-          server: acr.properties.loginServer
-          identity: pullMi.id
+          server: containerRegistry.properties.loginServer
+          identity: pullManagedIdentity.id
         }
       ]
     }
@@ -116,11 +117,11 @@ resource frontend 'Microsoft.App/containerApps@2024-08-02-preview' = {
   identity: {
     type: 'SystemAssigned, UserAssigned'
     userAssignedIdentities: {
-      '${pullMi.id}': {}
+      '${pullManagedIdentity.id}': {}
     }
   }
   dependsOn: [
-    acrPull
-    kvSecretsUser
+    acrPullRoleAssigment
+    keyVaultSecretsUser
   ]
 }
