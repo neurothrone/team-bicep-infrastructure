@@ -1,3 +1,6 @@
+// !: --- Imports ---
+import { acrPullRoleId, kvSecretUserRoleId } from '../shared/roles.bicep'
+
 @description('The location where the Backend will be deployed to')
 param location string
 
@@ -20,14 +23,6 @@ param backendRevisionSuffix string
 param tags object
 
 var containerAppName = 'team-bicep-backend'
-var acrPullRoleId = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  '7f951dda-4ed3-4680-a7ca-43fe172d538d'
-) // AcrPull
-var kvSecretUserRoleId = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  '4633458b-17de-408a-b874-0445c86b69e6'
-) // Key Vault Secrets User
 
 resource env 'Microsoft.App/managedEnvironments@2024-08-02-preview' existing = {
   name: containerAppEnvironmentName
