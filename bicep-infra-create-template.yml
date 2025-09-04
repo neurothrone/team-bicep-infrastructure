@@ -32,12 +32,12 @@ parameters:
   - name: templateFileName
     displayName: "Template File Name"
     type: string
-    default: "main.bicep"
+    default: "infra/main.bicep"
 
   - name: parametersFileName
     displayName: "Parameters File Name"
     type: string
-    default: "main.bicepparam"
+    default: "infra/main.bicepparam"
 
 
 jobs:
