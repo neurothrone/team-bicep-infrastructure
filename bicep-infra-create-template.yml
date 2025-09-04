@@ -1,14 +1,5 @@
 
 parameters:
-  - name: vmImageName
-    displayName: "VM Image"
-    type: string
-    default: "ubuntu-latest"
-    values:
-      - ubuntu-latest
-      - windows-latest
-      - macOS-latest
-
   - name: serviceConnectionName
     displayName: "Service Connection Name"
     type: string
@@ -48,15 +39,6 @@ parameters:
     type: string
     default: "main.bicepparam"
 
-variables:
-  vmImageName: ${{ parameters.vmImageName }}
-  environment: ${{ parameters.environment }}
-  resourceGroupName: ${{ parameters.resourceGroupName }}
-  templateFile: $(System.DefaultWorkingDirectory)/infra/${{ parameters.templateFileName }}
-  csmParametersFile: $(System.DefaultWorkingDirectory)/infra/${{ parameters.parametersFileName }}
-
-pool:
-  vmImage: $(vmImageName)
 
 jobs:
   - job:
@@ -71,7 +53,7 @@ jobs:
           resourceGroupName: ${{ iif(parameters.useEnvironmentSuffix, format('{0}-{1}', variables.resourceGroupName, variables.environment), variables.resourceGroupName) }}
           location: ${{ parameters.deploymentLocation }}
           templateLocation: "Linked artifact"
-          csmFile: $(templateFile)
-          csmParametersFile: $(csmParametersFile)
+          csmFile: ${{ parameters.templateFileName }}
+          csmParametersFile: ${{ parameters.parametersFileName }}
           deploymentName: $(Build.BuildNumber)
           deploymentMode: "Incremental"
