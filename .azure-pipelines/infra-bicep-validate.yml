@@ -1,0 +1,69 @@
+batch: true
+trigger:
+  - main
+
+name: Bicep Template Validation
+
+parameters:
+  - name: vmImageName
+    displayName: "VM Image"
+    type: string
+    default: "ubuntu-latest"
+    values:
+      - ubuntu-latest
+      - windows-latest
+      - macOS-latest
+
+  - name: serviceConnectionName
+    displayName: "Service Connection Name"
+    type: string
+    default: "BicepDeploymentConnection"
+
+  - name: deploymentLocation
+    displayName: "Deployment Location"
+    type: string
+    default: "swedencentral"
+
+  - name: resourceGroupName
+    displayName: "Resource Group Name"
+    type: string
+    default: ""
+
+  - name: templateFileName
+    displayName: "Template File Name"
+    type: string
+    default: "main.bicep"
+
+  - name: parametersFileName
+    displayName: "Parameters File Name"
+    type: string
+    default: "main.bicepparam"
+
+variables:
+  vmImageName: ${{ parameters.vmImageName }}
+  resourceGroupName: ${{ parameters.resourceGroupName }}
+  templateFile: $(System.DefaultWorkingDirectory)/infra/${{ parameters.templateFileName }}
+  csmParametersFile: $(System.DefaultWorkingDirectory)/infra/${{ parameters.parametersFileName }}
+
+pool:
+  vmImage: $(vmImageName)
+
+steps:
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: ${{ parameters.serviceConnectionName }}
+      scriptType: "bash"
+      scriptLocation: "inlineScript"
+      inlineScript: "az bicep install"
+
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: ${{ parameters.serviceConnectionName }}
+      scriptType: "bash"
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        az deployment group validate 
+        --resource-group $(resourceGroupName)
+        --location $(deploymentLocation)
+        --template-file $(templateFile)
+        --parameters $(csmParametersFile)
