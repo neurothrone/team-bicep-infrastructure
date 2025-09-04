@@ -11,6 +11,9 @@ parameters:
 
   - name: imageRepository
     type: string
+  
+  - name: CheckOutAlias
+    type: string
 
 jobs:
   - job: DockerBuildAndPush
@@ -18,7 +21,7 @@ jobs:
     pool:
       vmImage: ubuntu-latest
     steps:
-      - checkout: self
+      - checkout: $ {{ parameters.CheckOutAlias }}
       
       
       - task: Docker@2
