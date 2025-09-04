@@ -14,7 +14,7 @@ param keyVaultName string
 param imageName string
 
 @description('The revision suffix for the Backend deployment')
-param BackendRevisionSuffix string
+param backendRevisionSuffix string
 
 @description('The tags that will be applied to the Backend Container App')
 param tags object
@@ -86,7 +86,7 @@ resource backend 'Microsoft.App/containerApps@2024-08-02-preview' = {
       ]
     }
     template: {
-      revisionSuffix: BackendRevisionSuffix
+      revisionSuffix: backendRevisionSuffix
       containers: [
         {
           name: containerAppName

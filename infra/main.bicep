@@ -27,7 +27,7 @@ param frontendImage string
 param frontendRevisionSuffix string
 
 @description('The revision suffix for the Backend deployment')
-param BackendRevisionSuffix string
+param backendRevisionSuffix string
 
 @description('Whether to use a placeholder image in the Container Registry module for initial setup')
 param usePlaceHolderImage bool
@@ -82,7 +82,7 @@ module backendModule 'apps/backend.bicep' = {
     containerRegistryName: containerRegistryModule.outputs.name
     keyVaultName: keyVaultModule.outputs.name
     imageName: backendImage
-    BackendRevisionSuffix: BackendRevisionSuffix
+    backendRevisionSuffix: backendRevisionSuffix
     tags: tags
   }
 }
