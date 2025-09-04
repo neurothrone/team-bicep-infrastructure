@@ -27,6 +27,11 @@ resources:
           include:
             - main
 
+variables:
+  frontendRepo: "crteambicepprod.azurecr.io/teambicep/frontend"
+  backendRepo: "crteambicepprod.azurecr.io/teambicep/backend"
+  tags: $(Build.BuildNumber)
+
 stages:
 - stage: Backend
   displayName: 'Build Backend With docker'
@@ -38,7 +43,7 @@ stages:
       contextPath: 'src/TeamBicep.WebApi'
       imageRepository: 'TeamBicep/Backend'
       repoAlias: 'Backend'
-      tag: $(Build.BuildId)
+      tag: $(Build.BuildNumber)
 
 - stage: Frontend
   displayName: 'Building Frontend with docker'
@@ -51,7 +56,7 @@ stages:
       contextPath: 'src/TeamBicep.WebApp'
       imageRepository: 'TeamBicep/Frontend'
       repoAlias: 'Frontend'
-      tag: $(Build.BuildId)
+      tag: $(tags)
 
 - stage: Infra
   displayName: 'Build Infra'
@@ -64,3 +69,5 @@ stages:
       resourceGroupName: 'RG-dersimabbas'
       useEnvironmentSuffix: false
       deploymentLocation: 'swedencentral'
+      backendImage: $(backendRepo):$(tags)
+      frontendImage: $(frontendRepo):$(tags)
