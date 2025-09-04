@@ -1,0 +1,80 @@
+trigger: none
+
+name: Deploy Resources to Azure with Bicep using Resource Group scope
+
+parameters:
+  - name: vmImageName
+    displayName: "VM Image"
+    type: string
+    default: "ubuntu-latest"
+    values:
+      - ubuntu-latest
+      - windows-latest
+      - macOS-latest
+
+  - name: serviceConnectionName
+    displayName: "Service Connection Name"
+    type: string
+    default: "BicepDeploymentConnection"
+
+  - name: environment
+    displayName: "Environment"
+    type: string
+    default: "dev"
+    values:
+      - dev
+      - test
+      - prod
+
+  - name: deploymentLocation
+    displayName: "Deployment Location"
+    type: string
+    default: "swedencentral"
+
+  - name: resourceGroupName
+    displayName: "Resource Group Name"
+    type: string
+    default: ""
+
+  - name: useEnvironmentSuffix
+    displayName: "Use Environment Suffix (e.g. rg-team-bicep-dev)"
+    type: boolean
+    default: true
+
+  - name: templateFileName
+    displayName: "Template File Name"
+    type: string
+    default: "main.bicep"
+
+  - name: parametersFileName
+    displayName: "Parameters File Name"
+    type: string
+    default: "main.bicepparam"
+
+variables:
+  vmImageName: ${{ parameters.vmImageName }}
+  environment: ${{ parameters.environment }}
+  resourceGroupName: ${{ parameters.resourceGroupName }}
+  templateFile: $(System.DefaultWorkingDirectory)/infra/${{ parameters.templateFileName }}
+  csmParametersFile: $(System.DefaultWorkingDirectory)/infra/${{ parameters.parametersFileName }}
+
+pool:
+  vmImage: $(vmImageName)
+
+jobs:
+  - job:
+    displayName: "Deploy Azure IaC with Bicep"
+    steps:
+      - task: AzureResourceManagerTemplateDeployment@3
+        displayName: "Deploy Bicep Template to Azure"
+        inputs:
+          deploymentScope: "Resource Group"
+          connectedServiceName: ${{ parameters.serviceConnectionName }}
+          action: "Create Or Update Resource Group"
+          resourceGroupName: ${{ iif(parameters.useEnvironmentSuffix, format('{0}-{1}', variables.resourceGroupName, variables.environment), variables.resourceGroupName) }}
+          location: ${{ parameters.deploymentLocation }}
+          templateLocation: "Linked artifact"
+          csmFile: $(templateFile)
+          csmParametersFile: $(csmParametersFile)
+          deploymentName: $(Build.BuildNumber)
+          deploymentMode: "Incremental"
