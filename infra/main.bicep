@@ -1,3 +1,7 @@
+metadata name = 'Team Bicep Microservices'
+metadata author = 'Team Bicep'
+metadata description = 'Bicep template to deploy a microservices architecture using Azure Container Apps, including backend and frontend services, with integrated monitoring and security features.'
+
 @description('The location to deploy all resources')
 param location string = resourceGroup().location
 
