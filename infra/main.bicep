@@ -26,6 +26,7 @@ param backendImage string
 @description('The container image used by the Frontend')
 param frontendImage string
 
+param usePlaceHolderImage bool
 @description('Tags to be applied to all resources')
 param tags object = {}
 
@@ -64,6 +65,7 @@ module containerRegistryModule 'core/host/container-registry.bicep' = {
     containerRegistryName: containerRegistryName
     location: location
     tags: tags
+    usePlaceHolderImage: usePlaceHolderImage
   }
 }
 

@@ -8,6 +8,8 @@ param logAnalyticsWorkspaceName = 'law-team-bicep-prod'
 
 param containerRegistryName = 'crteambicepprod'
 
+param usePlaceHolderImage = false
+
 param keyVaultName = 'kv-teambicepprod'
 
 param backendImage = 'crteambicepprod.azurecr.io/teambicep/backend:latest'
