@@ -13,10 +13,11 @@ param keyVaultName string
 @description('The container image that this Container App will use')
 param imageName string
 
+@description('The revision suffix for the Frontend deployment')
+param frontendRevisionSuffix string
+
 @description('The Backend API FQDN that this Frontend will communicate with')
 param backendFqdn string
-
-param frontendRevisionSuffix string
 
 @description('The tags that will be applied to the Frontend UI')
 param tags object

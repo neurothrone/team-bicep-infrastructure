@@ -1,13 +1,14 @@
-@description('The name applied to the Container Registry')
-param containerRegistryName string
-
 @description('The location that the Container Registry will be deployed to')
 param location string
 
+@description('The name applied to the Container Registry')
+param containerRegistryName string
+
+@description('Whether to use a placeholder image in the Container Registry for initial setup')
+param usePlaceHolderImage bool
+
 @description('The tags that will be applied to the Container Registry')
 param tags object
-
-param usePlaceHolderImage bool
 
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' = {
   name: containerRegistryName

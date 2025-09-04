@@ -1,16 +1,17 @@
+@description('The location that the Container App Environment will be deployed')
+param location string
+
 @description('The name of the Container App Environment that will be deployed')
 param containerAppEnvironmentName string
+
+@description('The name of the Container Registry that this Container App environment will pull images from')
+param containerRegistryName string
 
 @description('The name of the Log Analytics workspace that this Container App environment sends logs to')
 param logAnalyticsName string
 
-@description('The location that the Container App Environment will be deployed')
-param location string
-
 @description('The tags that will be applied to the Container App Environment')
 param tags object
-
-param containerRegistryName string
 
 var acrPullRoleId = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',

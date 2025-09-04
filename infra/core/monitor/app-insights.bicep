@@ -1,8 +1,8 @@
-@description('The name of the Application Insights workspace that will be deployed.')
-param appInsightsName string
-
 @description('The location that the Application Insights workspace will be deployed')
 param location string
+
+@description('The name of the Application Insights workspace that will be deployed.')
+param appInsightsName string
 
 @description('The name of the Log Analytics workspace that will be linked to this Application Insights workspace.')
 param logAnalyticsName string

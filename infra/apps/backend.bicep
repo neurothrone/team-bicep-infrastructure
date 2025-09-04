@@ -13,10 +13,11 @@ param keyVaultName string
 @description('The container image that this Container App will use')
 param imageName string
 
+@description('The revision suffix for the Backend deployment')
+param BackendRevisionSuffix string
+
 @description('The tags that will be applied to the Backend Container App')
 param tags object
-
-param BackendRevisionSuffix string
 
 var containerAppName = 'team-bicep-backend'
 var acrPullRoleId = subscriptionResourceId(

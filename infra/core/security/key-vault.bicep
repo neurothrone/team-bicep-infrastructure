@@ -1,8 +1,8 @@
-@description('The name of the Key Vault that will be deployed')
-param keyVaultName string
-
 @description('The location that the Key Vault will be deployed to')
 param location string
+
+@description('The name of the Key Vault that will be deployed')
+param keyVaultName string
 
 @description('The tags that will be applied to the Key Vault')
 param tags object

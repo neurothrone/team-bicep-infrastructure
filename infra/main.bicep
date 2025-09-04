@@ -23,12 +23,17 @@ param backendImage string
 @description('The container image used by the Frontend')
 param frontendImage string
 
+@description('The revision suffix for the Frontend deployment')
+param frontendRevisionSuffix string
+
+@description('The revision suffix for the Backend deployment')
+param BackendRevisionSuffix string
+
+@description('Whether to use a placeholder image in the Container Registry module for initial setup')
 param usePlaceHolderImage bool
+
 @description('Tags to be applied to all resources')
 param tags object = {}
-
-param frontendRevisionSuffix string
-param BackendRevisionSuffix string
 
 module logAnalyticsModule 'core/monitor/log-analytics.bicep' = {
   name: 'logAnalyticsModule'
@@ -42,8 +47,8 @@ module logAnalyticsModule 'core/monitor/log-analytics.bicep' = {
 module keyVaultModule 'core/security/key-vault.bicep' = {
   name: 'keyVaultModule'
   params: {
-    keyVaultName: keyVaultName
     location: location
+    keyVaultName: keyVaultName
     tags: tags
   }
 }
@@ -51,19 +56,19 @@ module keyVaultModule 'core/security/key-vault.bicep' = {
 module containerRegistryModule 'core/host/container-registry.bicep' = {
   name: 'containerRegistryModule'
   params: {
-    containerRegistryName: containerRegistryName
     location: location
-    tags: tags
+    containerRegistryName: containerRegistryName
     usePlaceHolderImage: usePlaceHolderImage
+    tags: tags
   }
 }
 
 module containerAppEnvironmentModule 'core/host/container-app-env.bicep' = {
   name: 'containerAppEnvironmentModule'
   params: {
-    containerRegistryName: containerRegistryModule.outputs.name
-    containerAppEnvironmentName: containerAppEnvironmentName
     location: location
+    containerAppEnvironmentName: containerAppEnvironmentName
+    containerRegistryName: containerRegistryModule.outputs.name
     logAnalyticsName: logAnalyticsModule.outputs.name
     tags: tags
   }
@@ -72,26 +77,26 @@ module containerAppEnvironmentModule 'core/host/container-app-env.bicep' = {
 module backendModule 'apps/backend.bicep' = {
   name: 'backendModule'
   params: {
+    location: location
     containerAppEnvironmentName: containerAppEnvironmentModule.outputs.containerAppEnvName
     containerRegistryName: containerRegistryModule.outputs.name
     keyVaultName: keyVaultModule.outputs.name
-    location: location
-    tags: tags
     imageName: backendImage
     BackendRevisionSuffix: BackendRevisionSuffix
+    tags: tags
   }
 }
 
 module frontendModule 'apps/frontend.bicep' = {
   name: 'frontendModule'
   params: {
+    location: location
     containerAppEnvironmentName: containerAppEnvironmentModule.outputs.containerAppEnvName
     containerRegistryName: containerRegistryModule.outputs.name
     keyVaultName: keyVaultModule.outputs.name
-    location: location
-    tags: tags
     imageName: frontendImage
-    backendFqdn: backendModule.outputs.fqdn
     frontendRevisionSuffix: frontendRevisionSuffix
+    backendFqdn: backendModule.outputs.fqdn
+    tags: tags
   }
 }

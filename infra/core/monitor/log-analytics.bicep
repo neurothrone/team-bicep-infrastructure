@@ -1,8 +1,8 @@
-@description('The name of the Log Analytics workspace')
-param logAnalyticsWorkspaceName string
-
 @description('The location to where the Log Analytics workspace will be deployed')
 param location string
+
+@description('The name of the Log Analytics workspace')
+param logAnalyticsWorkspaceName string
 
 @description('The tags that will be applied to the Log Analytics workspace')
 param tags object
