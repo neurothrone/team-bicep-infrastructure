@@ -25,7 +25,7 @@ jobs:
       - task: Docker@2
         inputs:
           command: login
-          containerRegistry: 'dersimabbas'
+          containerRegistry: 'ACRBicep'
         displayName: 'Logging into Azure Container Registry'
       
       - task: Docker@2
