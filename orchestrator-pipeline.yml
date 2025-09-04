@@ -28,9 +28,8 @@ resources:
             - main
 
 stages:
-
 - stage: Backend
-  displayName: 'Backend'
+  displayName: 'Build Backend With docker'
   jobs:
   - template: DockerBuildAndPush-template.yml@infra
     parameters:
@@ -39,6 +38,7 @@ stages:
       contextPath: 'src/TeamBicep.WebApi'
       imageRepository: 'TeamBicep/Backend'
       repoAlias: 'Backend'
+      tag: $(Build.BuildId)
 
 - stage: Frontend
   displayName: 'Building Frontend with docker'
@@ -51,6 +51,7 @@ stages:
       contextPath: 'src/TeamBicep.WebApp'
       imageRepository: 'TeamBicep/Frontend'
       repoAlias: 'Frontend'
+      tag: $(Build.BuildId)
 
 - stage: Infra
   displayName: 'Build Infra'
