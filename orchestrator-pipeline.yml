@@ -32,7 +32,6 @@ stages:
 - stage: Backend
   displayName: 'Backend'
   jobs:
-
   - template: DockerBuildAndPush-template.yml@infra
     parameters:
       projectName: 'TeamBicep.WebApi'
@@ -43,8 +42,8 @@ stages:
 
 - stage: Frontend
   displayName: 'Building Frontend with docker'
+  dependsOn: Backend
   jobs:
-
   - template: DockerBuildAndPush-template.yml@infra
     parameters:
       projectName: 'TeamBicep.WebApp'
@@ -53,10 +52,9 @@ stages:
       imageRepository: 'TeamBicep/Frontend'
       repoAlias: 'Frontend'
 
-
 - stage: Infra
   displayName: 'Build Infra'
-  dependsOn: Backend
+  dependsOn: Frontend
   jobs:
   - template: bicep-infra-create-template.yml@infra
     parameters:
