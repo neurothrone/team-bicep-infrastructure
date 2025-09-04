@@ -43,7 +43,7 @@ stages:
       contextPath: 'src/TeamBicep.WebApi'
       imageRepository: 'TeamBicep/Backend'
       repoAlias: 'Backend'
-      tag: $(Build.BuildNumber)
+      tag: $(tags)
 
 - stage: Frontend
   displayName: 'Building Frontend with docker'
