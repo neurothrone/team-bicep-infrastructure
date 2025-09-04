@@ -27,7 +27,7 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-11-01-pr
 
 @description('This module seeds the ACR with the public version of the app')
 module acrImportImage 'br/public:deployment-scripts/import-acr:3.0.1' = if (usePlaceHolderImage) {
-  name: 'importContainerImage'
+  name: 'importContainerImageModule'
   params: {
     acrName: containerRegistryName
     location: location
