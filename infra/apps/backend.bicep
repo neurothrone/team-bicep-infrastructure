@@ -20,22 +20,46 @@ var containerAppName = 'team-bicep-backend'
 var acrPullRoleId = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
   '7f951dda-4ed3-4680-a7ca-43fe172d538d'
-)
-var keyVaultSecretUserRoleId = subscriptionResourceId(
+) // AcrPull
+var kvSecretUserRoleId = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
   '4633458b-17de-408a-b874-0445c86b69e6'
-)
+) // Key Vault Secrets User
 
 resource env 'Microsoft.App/managedEnvironments@2024-08-02-preview' existing = {
   name: containerAppEnvironmentName
 }
 
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' existing = {
+resource acr 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' existing = {
   name: containerRegistryName
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
+resource kv 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
   name: keyVaultName
+}
+
+resource pullMi 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: 'mi-${uniqueString(resourceGroup().id, 'backend-pull')}'
+  location: location
+}
+resource acrPull 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(acr.id, pullMi.id, acrPullRoleId)
+  scope: acr
+  properties: {
+    roleDefinitionId: acrPullRoleId
+    principalId: pullMi.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource kvSecretsUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(kv.id, pullMi.id, kvSecretUserRoleId)
+  scope: kv
+  properties: {
+    roleDefinitionId: kvSecretUserRoleId
+    principalId: pullMi.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
 }
 
 resource backend 'Microsoft.App/containerApps@2024-08-02-preview' = {
@@ -53,23 +77,22 @@ resource backend 'Microsoft.App/containerApps@2024-08-02-preview' = {
       }
       registries: [
         {
-          server: containerRegistry.properties.loginServer
-          username: containerRegistry.listCredentials().username
-          identity: 'system'
+          server: acr.properties.loginServer
+          identity: pullMi.id
         }
       ]
-      secrets: [
-        {
-          name: 'app-insights-key'
-          keyVaultUrl: 'https://${keyVault.name}.vault.azure.net/secrets/appinsightsinstrumentationkey'
-          identity: 'system'
-        }
-        {
-          name: 'app-insights-connection-string'
-          keyVaultUrl: 'https://${keyVault.name}.vault.azure.net/secrets/appinsightsconnectionstring'
-          identity: 'system'
-        }
-      ]
+      // secrets: [
+      //   {
+      //     name: 'app-insights-key'
+      //     keyVaultUrl: 'https://${keyVault.name}.vault.azure.net/secrets/appinsightsinstrumentationkey'
+      //     identity: 'system'
+      //   }
+      //   {
+      //     name: 'app-insights-connection-string'
+      //     keyVaultUrl: 'https://${keyVault.name}.vault.azure.net/secrets/appinsightsconnectionstring'
+      //     identity: 'system'
+      //   }
+      // ]
     }
     template: {
       containers: [
@@ -81,14 +104,14 @@ resource backend 'Microsoft.App/containerApps@2024-08-02-preview' = {
               name: 'ASPNETCORE_ENVIRONMENT'
               value: 'Development'
             }
-            {
-              name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-              secretRef: 'app-insights-key'
-            }
-            {
-              name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-              secretRef: 'app-insights-connection-string'
-            }
+            // {
+            //   name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+            //   secretRef: 'app-insights-key'
+            // }
+            // {
+            //   name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+            //   secretRef: 'app-insights-connection-string'
+            // }
           ]
           resources: {
             cpu: json('0.5')
@@ -97,34 +120,21 @@ resource backend 'Microsoft.App/containerApps@2024-08-02-preview' = {
         }
       ]
       scale: {
-        minReplicas: 0
+        minReplicas: 1
         maxReplicas: 1
       }
     }
   }
   identity: {
-    type: 'SystemAssigned'
+    type: 'SystemAssigned, UserAssigned'
+    userAssignedIdentities: {
+      '${pullMi.id}': {}
+    }
   }
-}
-
-resource acrPullRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(containerRegistry.id, backend.id, acrPullRoleId)
-  scope: containerRegistry
-  properties: {
-    principalId: backend.identity.principalId
-    roleDefinitionId: acrPullRoleId
-    principalType: 'ServicePrincipal'
-  }
-}
-
-resource keyVaultSecretUserRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(keyVault.id, backend.id, keyVaultSecretUserRoleId)
-  scope: keyVault
-  properties: {
-    principalId: backend.identity.principalId
-    roleDefinitionId: keyVaultSecretUserRoleId
-    principalType: 'ServicePrincipal'
-  }
+  dependsOn: [ 
+    acrPull
+    kvSecretsUser
+  ]
 }
 
 @description('The FQDN for the Backend Container App')

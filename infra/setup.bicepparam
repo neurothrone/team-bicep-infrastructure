@@ -10,9 +10,9 @@ param containerRegistryName = 'crteambicepprod'
 
 param keyVaultName = 'kv-teambicepprod'
 
-param backendImage = 'crteambicepprod.azurecr.io/teambicep/backend:latest'
+param backendImage = 'crteambicepprod.azurecr.io/azuredocs/containerapps-helloworld:latest'
 
-param frontendImage = 'crteambicepprod.azurecr.io/teambicep/frontend:latest'
+param frontendImage = 'crteambicepprod.azurecr.io/azuredocs/containerapps-helloworld:latest'
 
 param tags = {
   environment: 'prod'

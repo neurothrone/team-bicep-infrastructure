@@ -8,8 +8,8 @@ param location string = resourceGroup().location
 @description('The name of the log analytics workspace')
 param logAnalyticsWorkspaceName string
 
-@description('The name of the Application Insights workspace')
-param appInsightsName string
+// @description('The name of the Application Insights workspace')
+// param appInsightsName string
 
 @description('The name of the Container App Environment')
 param containerAppEnvironmentName string
@@ -47,16 +47,16 @@ module keyVaultModule 'core/security/key-vault.bicep' = {
   }
 }
 
-module appInsightsModule 'core/monitor/app-insights.bicep' = {
-  name: 'appInsightsModule'
-  params: {
-    appInsightsName: appInsightsName
-    keyVaultName: keyVaultModule.outputs.name
-    location: location
-    logAnalyticsName: logAnalyticsModule.outputs.name
-    tags: tags
-  }
-}
+// module appInsightsModule 'core/monitor/app-insights.bicep' = {
+//   name: 'appInsightsModule'
+//   params: {
+//     appInsightsName: appInsightsName
+//     keyVaultName: keyVaultModule.outputs.name
+//     location: location
+//     logAnalyticsName: logAnalyticsModule.outputs.name
+//     tags: tags
+//   }
+// }
 
 module containerRegistryModule 'core/host/container-registry.bicep' = {
   name: 'containerRegistryModule'
@@ -70,7 +70,8 @@ module containerRegistryModule 'core/host/container-registry.bicep' = {
 module containerAppEnvironmentModule 'core/host/container-app-env.bicep' = {
   name: 'containerAppEnvironmentModule'
   params: {
-    appInsightsName: appInsightsModule.outputs.name
+    // appInsightsName: appInsightsModule.outputs.name
+    containerRegistryName: containerRegistryModule.outputs.name
     containerAppEnvironmentName: containerAppEnvironmentName
     location: location
     logAnalyticsName: logAnalyticsModule.outputs.name
