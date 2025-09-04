@@ -39,6 +39,14 @@ parameters:
     type: string
     default: $(System.DefaultWorkingDirectory)/infra/main.prod.bicepparam
 
+  - name: backendImage
+    type: string
+    default: crteambicepprod.azurecr.io/teambicep/backend:$(Build.BuildNumber)
+  
+  - name: frontendImage
+    type: string
+    default: crteambicepprod.azurecr.io/teambicep/frontend:$(Build.BuildNumber)
+
 
 jobs:
   - job:
@@ -57,3 +65,6 @@ jobs:
           csmParametersFile: ${{ parameters.parametersFileName }}
           deploymentName: $(Build.BuildNumber)
           deploymentMode: "Incremental"
+          overrideParameters: >
+           - backendImage ${{ parameters.backendImage }}
+           - frontendImage ${{ parameters.frontendImage }}
