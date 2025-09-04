@@ -1,16 +1,14 @@
-trigger: none
 
 pool:
   vmImage: ubuntu-latest
 
 resources:
   repositories:
-
     - repository: infra
       type: git
       name: team-bicep-infrastructure
-      ref: refs/heads/main
-           
+      trigger: none
+
     - repository: Backend
       type: git
       name: team-bicep-backend
@@ -19,7 +17,7 @@ resources:
         branches:
           include:
             - main
-    
+
     - repository: Frontend
       type: git
       name: team-bicep-frontend
@@ -41,7 +39,7 @@ stages:
       contextPath: 'src/TeamBicep.WebApi'
       imageRepository: 'TeamBicep/Backend'
 
-- stage:
+- stage: Infra
   displayName: 'Build Infra'
   dependsOn: Backend
   jobs:
