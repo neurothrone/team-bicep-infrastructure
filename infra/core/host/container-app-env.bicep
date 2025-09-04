@@ -1,32 +1,38 @@
 // !: --- Imports ---
 import { acrPullRoleId } from '../../shared/roles.bicep'
 
+@export()
+type ContainerAppEnvironmentSettingsType = {
+  @description('The name of the Container App Environment that will be deployed')
+  containerAppEnvironmentName: string
+
+  @description('The name of the Container Registry that this Container App environment will pull images from')
+  containerRegistryName: string
+
+  @description('The name of the Log Analytics workspace that this Container App environment sends logs to')
+  logAnalyticsWorkspaceName: string
+}
+
 @description('The location that the Container App Environment will be deployed')
 param location string
 
-@description('The name of the Container App Environment that will be deployed')
-param containerAppEnvironmentName string
-
-@description('The name of the Container Registry that this Container App environment will pull images from')
-param containerRegistryName string
-
-@description('The name of the Log Analytics workspace that this Container App environment sends logs to')
-param logAnalyticsName string
+@description('The settings for the Container App Environment that will be deployed')
+param settings ContainerAppEnvironmentSettingsType
 
 @description('The tags that will be applied to the Container App Environment')
 param tags object
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
-  name: logAnalyticsName
+  name: settings.logAnalyticsWorkspaceName
 }
 
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' existing = {
-  name: containerRegistryName
+  name: settings.containerRegistryName
 }
 
 resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2024-08-02-preview' = {
-  name: containerAppEnvironmentName
   location: location
+  name: settings.containerAppEnvironmentName
   tags: tags
   properties: {
     appLogsConfiguration: {

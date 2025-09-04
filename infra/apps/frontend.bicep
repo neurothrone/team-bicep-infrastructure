@@ -1,23 +1,32 @@
 // !: --- Imports ---
 import { acrPullRoleId, kvSecretUserRoleId } from '../shared/roles.bicep'
 
+@export()
+type FrontendSettingsType = {
+  @description('The name of the Container App that will be deployed')
+  frontendContainerAppName: string
+
+  @description('The container image that this Container App will use')
+  frontendImageName: string
+
+  @description('The revision suffix for the Frontend deployment')
+  frontendRevisionSuffix: string
+
+  @description('The Container App environment that the Container App will be deployed to')
+  containerAppEnvironmentName: string
+
+  @description('The name of the Container Registry that this Container App pull images')
+  containerRegistryName: string
+
+  @description('The name of the Key Vault that this Container App will pull secrets from')
+  keyVaultName: string
+}
+
 @description('The location where the Frontend will be deployed to')
 param location string
 
-@description('The Container App environment that the Container App will be deployed to')
-param containerAppEnvironmentName string
-
-@description('The name of the Container Registry that this Container App pull images')
-param containerRegistryName string
-
-@description('The name of the Key Vault that this Container App will pull secrets from')
-param keyVaultName string
-
-@description('The container image that this Container App will use')
-param imageName string
-
-@description('The revision suffix for the Frontend deployment')
-param frontendRevisionSuffix string
+@description('The settings for the Frontend Container App that will be deployed')
+param settings FrontendSettingsType
 
 @description('The Backend API FQDN that this Frontend will communicate with')
 param backendFqdn string
@@ -25,18 +34,16 @@ param backendFqdn string
 @description('The tags that will be applied to the Frontend UI')
 param tags object
 
-var containerAppName = 'team-bicep-frontend'
-
 resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2024-08-02-preview' existing = {
-  name: containerAppEnvironmentName
+  name: settings.containerAppEnvironmentName
 }
 
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' existing = {
-  name: containerRegistryName
+  name: settings.containerRegistryName
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
-  name: keyVaultName
+  name: settings.keyVaultName
 }
 
 resource pullManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
@@ -67,7 +74,7 @@ resource keyVaultSecretsUser 'Microsoft.Authorization/roleAssignments@2022-04-01
 }
 
 resource frontendContainerApp 'Microsoft.App/containerApps@2024-08-02-preview' = {
-  name: containerAppName
+  name: settings.frontendContainerAppName
   location: location
   tags: tags
   properties: {
@@ -87,11 +94,11 @@ resource frontendContainerApp 'Microsoft.App/containerApps@2024-08-02-preview' =
       ]
     }
     template: {
-      revisionSuffix: frontendRevisionSuffix
+      revisionSuffix: settings.frontendRevisionSuffix
       containers: [
         {
-          name: containerAppName
-          image: imageName
+          name: settings.frontendContainerAppName
+          image: settings.frontendImageName
           env: [
             {
               name: 'ASPNETCORE_ENVIRONMENT'

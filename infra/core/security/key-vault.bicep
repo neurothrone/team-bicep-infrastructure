@@ -1,14 +1,20 @@
+@export()
+type KeyVaultSettingsType = {
+  @description('The name of the Key Vault that will be deployed')
+  keyVaultName: string
+}
+
 @description('The location that the Key Vault will be deployed to')
 param location string
 
-@description('The name of the Key Vault that will be deployed')
-param keyVaultName string
+@description('The settings for the Key Vault that will be deployed')
+param settings KeyVaultSettingsType
 
 @description('The tags that will be applied to the Key Vault')
 param tags object
 
 resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
-  name: keyVaultName
+  name: settings.keyVaultName
   location: location
   tags: tags
   properties: {
