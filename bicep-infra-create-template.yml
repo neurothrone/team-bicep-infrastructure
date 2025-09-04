@@ -47,6 +47,15 @@ parameters:
     type: string
     default: crteambicepprod.azurecr.io/teambicep/frontend:$(Build.BuildNumber)
 
+  - name: frontendRevisionSuffix
+    type: string
+    default: $(Build.BuildId)
+
+  - name: BackendRevisionSuffix
+    type: string
+    default: $(Build.BuildId)
+
+
 
 jobs:
   - job:
@@ -68,3 +77,5 @@ jobs:
           overrideParameters: >
            - backendImage ${{ parameters.backendImage }}
            - frontendImage ${{ parameters.frontendImage }}
+           - frontendRevisionSuffix ${{ parameters.frontendRevisionSuffix }}
+           - BackendRevisionSuffix ${{ parameters.BackendRevisionSuffix }}
