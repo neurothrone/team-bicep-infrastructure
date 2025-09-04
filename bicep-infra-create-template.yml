@@ -1,6 +1,4 @@
 
-name: Deploy Resources to Azure with Bicep using Resource Group scope
-
 parameters:
   - name: vmImageName
     displayName: "VM Image"
