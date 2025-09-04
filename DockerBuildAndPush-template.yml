@@ -21,7 +21,7 @@ jobs:
     pool:
       vmImage: ubuntu-latest
     steps:
-      - checkout: $ {{ parameters.repoAlias }}
+      - checkout: ${{ parameters.repoAlias }}
       
       
       - task: Docker@2
