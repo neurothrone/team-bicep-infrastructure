@@ -16,7 +16,7 @@ param imageName string
 @description('The tags that will be applied to the Backend Container App')
 param tags object
 
-param BackendRevisionSuffix string = ''
+param BackendRevisionSuffix string 
 
 var containerAppName = 'team-bicep-backend'
 var acrPullRoleId = subscriptionResourceId(
