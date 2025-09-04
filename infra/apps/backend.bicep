@@ -40,6 +40,7 @@ resource pullMi 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = 
   name: 'mi-${uniqueString(resourceGroup().id, 'backend-pull')}'
   location: location
 }
+
 resource acrPull 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(acr.id, pullMi.id, acrPullRoleId)
   scope: acr
