@@ -1,7 +1,5 @@
 using 'main.bicep'
 
-// param appInsightsName =  'appi-team-bicep-prod'
-
 param BackendRevisionSuffix  = ''
 param frontendRevisionSuffix  = ''
 

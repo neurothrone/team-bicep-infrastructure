@@ -16,7 +16,7 @@ param imageName string
 @description('The tags that will be applied to the Backend Container App')
 param tags object
 
-param BackendRevisionSuffix string 
+param BackendRevisionSuffix string
 
 var containerAppName = 'team-bicep-backend'
 var acrPullRoleId = subscriptionResourceId(
@@ -83,18 +83,6 @@ resource backend 'Microsoft.App/containerApps@2024-08-02-preview' = {
           identity: pullMi.id
         }
       ]
-      // secrets: [
-      //   {
-      //     name: 'app-insights-key'
-      //     keyVaultUrl: 'https://${keyVault.name}.vault.azure.net/secrets/appinsightsinstrumentationkey'
-      //     identity: 'system'
-      //   }
-      //   {
-      //     name: 'app-insights-connection-string'
-      //     keyVaultUrl: 'https://${keyVault.name}.vault.azure.net/secrets/appinsightsconnectionstring'
-      //     identity: 'system'
-      //   }
-      // ]
     }
     template: {
       revisionSuffix: BackendRevisionSuffix
@@ -107,14 +95,6 @@ resource backend 'Microsoft.App/containerApps@2024-08-02-preview' = {
               name: 'ASPNETCORE_ENVIRONMENT'
               value: 'Development'
             }
-            // {
-            //   name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-            //   secretRef: 'app-insights-key'
-            // }
-            // {
-            //   name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-            //   secretRef: 'app-insights-connection-string'
-            // }
           ]
           resources: {
             cpu: json('0.5')
@@ -134,7 +114,7 @@ resource backend 'Microsoft.App/containerApps@2024-08-02-preview' = {
       '${pullMi.id}': {}
     }
   }
-  dependsOn: [ 
+  dependsOn: [
     acrPull
     kvSecretsUser
   ]

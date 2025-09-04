@@ -8,9 +8,6 @@ param location string = resourceGroup().location
 @description('The name of the log analytics workspace')
 param logAnalyticsWorkspaceName string
 
-// @description('The name of the Application Insights workspace')
-// param appInsightsName string
-
 @description('The name of the Container App Environment')
 param containerAppEnvironmentName string
 
@@ -31,7 +28,7 @@ param usePlaceHolderImage bool
 param tags object = {}
 
 param frontendRevisionSuffix string
-param BackendRevisionSuffix string 
+param BackendRevisionSuffix string
 
 module logAnalyticsModule 'core/monitor/log-analytics.bicep' = {
   name: 'logAnalyticsModule'
@@ -51,17 +48,6 @@ module keyVaultModule 'core/security/key-vault.bicep' = {
   }
 }
 
-// module appInsightsModule 'core/monitor/app-insights.bicep' = {
-//   name: 'appInsightsModule'
-//   params: {
-//     appInsightsName: appInsightsName
-//     keyVaultName: keyVaultModule.outputs.name
-//     location: location
-//     logAnalyticsName: logAnalyticsModule.outputs.name
-//     tags: tags
-//   }
-// }
-
 module containerRegistryModule 'core/host/container-registry.bicep' = {
   name: 'containerRegistryModule'
   params: {
@@ -75,7 +61,6 @@ module containerRegistryModule 'core/host/container-registry.bicep' = {
 module containerAppEnvironmentModule 'core/host/container-app-env.bicep' = {
   name: 'containerAppEnvironmentModule'
   params: {
-    // appInsightsName: appInsightsModule.outputs.name
     containerRegistryName: containerRegistryModule.outputs.name
     containerAppEnvironmentName: containerAppEnvironmentName
     location: location

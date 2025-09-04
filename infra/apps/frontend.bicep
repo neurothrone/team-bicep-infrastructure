@@ -86,18 +86,6 @@ resource frontend 'Microsoft.App/containerApps@2024-08-02-preview' = {
           identity: pullMi.id
         }
       ]
-      // secrets: [
-      //   {
-      //     name: 'app-insights-key'
-      //     keyVaultUrl: 'https://${keyVault.name}.vault.azure.net/secrets/appinsightsinstrumentationkey'
-      //     identity: 'system'
-      //   }
-      //   {
-      //     name: 'app-insights-connection-string'
-      //     keyVaultUrl: 'https://${keyVault.name}.vault.azure.net/secrets/appinsightsconnectionstring'
-      //     identity: 'system'
-      //   }
-      // ]
     }
     template: {
       revisionSuffix: frontendRevisionSuffix
@@ -110,14 +98,6 @@ resource frontend 'Microsoft.App/containerApps@2024-08-02-preview' = {
               name: 'ASPNETCORE_ENVIRONMENT'
               value: 'Development'
             }
-            // {
-            //   name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-            //   secretRef: 'app-insights-key'
-            // }
-            // {
-            //   name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-            //   secretRef: 'app-insights-connection-string'
-            // }
             {
               name: 'BackendApi'
               value: 'https://${backendFqdn}'
