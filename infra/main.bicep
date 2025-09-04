@@ -30,6 +30,9 @@ param usePlaceHolderImage bool
 @description('Tags to be applied to all resources')
 param tags object = {}
 
+param frontendRevisionSuffix string = ''
+param BackendRevisionSuffix string = ''
+
 module logAnalyticsModule 'core/monitor/log-analytics.bicep' = {
   name: 'logAnalyticsModule'
   params: {
@@ -90,6 +93,7 @@ module backendModule 'apps/backend.bicep' = {
     location: location
     tags: tags
     imageName: backendImage
+    BackendRevisionSuffix: BackendRevisionSuffix
   }
 }
 
@@ -103,5 +107,6 @@ module frontendModule 'apps/frontend.bicep' = {
     tags: tags
     imageName: frontendImage
     backendFqdn: backendModule.outputs.fqdn
+    frontendRevisionSuffix: frontendRevisionSuffix
   }
 }

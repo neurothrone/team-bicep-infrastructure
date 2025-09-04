@@ -16,6 +16,8 @@ param imageName string
 @description('The Backend API FQDN that this Frontend will communicate with')
 param backendFqdn string
 
+param frontendRevisionSuffix string = ''
+
 @description('The tags that will be applied to the Frontend UI')
 param tags object
 
@@ -98,6 +100,7 @@ resource frontend 'Microsoft.App/containerApps@2024-08-02-preview' = {
       // ]
     }
     template: {
+      revisionSuffix: frontendRevisionSuffix
       containers: [
         {
           name: containerAppName

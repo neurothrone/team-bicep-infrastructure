@@ -16,6 +16,8 @@ param imageName string
 @description('The tags that will be applied to the Backend Container App')
 param tags object
 
+param BackendRevisionSuffix string = ''
+
 var containerAppName = 'team-bicep-backend'
 var acrPullRoleId = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
@@ -95,6 +97,7 @@ resource backend 'Microsoft.App/containerApps@2024-08-02-preview' = {
       // ]
     }
     template: {
+      revisionSuffix: BackendRevisionSuffix
       containers: [
         {
           name: containerAppName
