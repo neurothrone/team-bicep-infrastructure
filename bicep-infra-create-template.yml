@@ -32,12 +32,12 @@ parameters:
   - name: templateFileName
     displayName: "Template File Name"
     type: string
-    default: "infra/main.bicep"
+    default: $(System.DefaultWorkingDirectory)/infra/main.bicep
 
   - name: parametersFileName
     displayName: "Parameters File Name"
     type: string
-    default: "infra/main.bicepparam"
+    default: $(System.DefaultWorkingDirectory)/infra/main.bicepparam
 
 
 jobs:
