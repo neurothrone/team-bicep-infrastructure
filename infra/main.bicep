@@ -2,44 +2,45 @@ metadata name = 'Team Bicep Microservices'
 metadata author = 'Team Bicep'
 metadata description = 'Bicep template to deploy a microservices architecture using Azure Container Apps, including backend and frontend services, with integrated monitoring and security features.'
 
+// !: --- Imports ---
+import { LogAnalyticsSettingsType } from 'core/monitor/log-analytics.bicep'
+import { ContainerRegistrySettingsType } from 'core/host/container-registry.bicep'
+import { ContainerAppEnvironmentSettingsType } from 'core/host/container-app-env.bicep'
+import { KeyVaultSettingsType } from 'core/security/key-vault.bicep'
+import { BackendSettingsType } from 'apps/backend.bicep'
+import { FrontendSettingsType } from 'apps/frontend.bicep'
+
+// !: --- Parameters ---
 @description('The location to deploy all resources')
 param location string = resourceGroup().location
 
-@description('The name of the log analytics workspace')
-param logAnalyticsWorkspaceName string
+@description('The settings for the Log Analytics workspace that will be deployed')
+param logAnalyticsSettings LogAnalyticsSettingsType
 
-@description('The name of the Container App Environment')
-param containerAppEnvironmentName string
+@description('The settings for the Container Registry that will be deployed')
+param containerRegistrySettings ContainerRegistrySettingsType
 
-@description('The name of the Container Registry')
-param containerRegistryName string
+@description('The settings for the Container App Environment that will be deployed')
+param containerAppEnvironmentSettings ContainerAppEnvironmentSettingsType
 
-@description('The name of the Key Vault')
-param keyVaultName string
+@description('The settings for the Key Vault that will be deployed')
+param keyVaultSettings KeyVaultSettingsType
 
-@description('The container image used by the Backend')
-param backendImage string
+@description('The settings for the Backend Container App that will be deployed')
+param backendSettings BackendSettingsType
 
-@description('The container image used by the Frontend')
-param frontendImage string
-
-@description('The revision suffix for the Frontend deployment')
-param frontendRevisionSuffix string
-
-@description('The revision suffix for the Backend deployment')
-param backendRevisionSuffix string
-
-@description('Whether to use a placeholder image in the Container Registry module for initial setup')
-param usePlaceHolderImage bool
+@description('The settings for the Frontend Container App that will be deployed')
+param frontendSettings FrontendSettingsType
 
 @description('Tags to be applied to all resources')
 param tags object = {}
 
+// !: --- Modules ---
 module logAnalyticsModule 'core/monitor/log-analytics.bicep' = {
   name: 'logAnalyticsModule'
   params: {
     location: location
-    logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
+    settings: logAnalyticsSettings
     tags: tags
   }
 }
@@ -48,7 +49,7 @@ module keyVaultModule 'core/security/key-vault.bicep' = {
   name: 'keyVaultModule'
   params: {
     location: location
-    keyVaultName: keyVaultName
+    settings: keyVaultSettings
     tags: tags
   }
 }
@@ -57,8 +58,7 @@ module containerRegistryModule 'core/host/container-registry.bicep' = {
   name: 'containerRegistryModule'
   params: {
     location: location
-    containerRegistryName: containerRegistryName
-    usePlaceHolderImage: usePlaceHolderImage
+    settings: containerRegistrySettings
     tags: tags
   }
 }
@@ -67,9 +67,7 @@ module containerAppEnvironmentModule 'core/host/container-app-env.bicep' = {
   name: 'containerAppEnvironmentModule'
   params: {
     location: location
-    containerAppEnvironmentName: containerAppEnvironmentName
-    containerRegistryName: containerRegistryModule.outputs.name
-    logAnalyticsName: logAnalyticsModule.outputs.name
+    settings: containerAppEnvironmentSettings
     tags: tags
   }
 }
@@ -78,11 +76,7 @@ module backendModule 'apps/backend.bicep' = {
   name: 'backendModule'
   params: {
     location: location
-    containerAppEnvironmentName: containerAppEnvironmentModule.outputs.containerAppEnvName
-    containerRegistryName: containerRegistryModule.outputs.name
-    keyVaultName: keyVaultModule.outputs.name
-    imageName: backendImage
-    backendRevisionSuffix: backendRevisionSuffix
+    settings: backendSettings
     tags: tags
   }
 }
@@ -91,11 +85,7 @@ module frontendModule 'apps/frontend.bicep' = {
   name: 'frontendModule'
   params: {
     location: location
-    containerAppEnvironmentName: containerAppEnvironmentModule.outputs.containerAppEnvName
-    containerRegistryName: containerRegistryModule.outputs.name
-    keyVaultName: keyVaultModule.outputs.name
-    imageName: frontendImage
-    frontendRevisionSuffix: frontendRevisionSuffix
+    settings: frontendSettings
     backendFqdn: backendModule.outputs.fqdn
     tags: tags
   }
