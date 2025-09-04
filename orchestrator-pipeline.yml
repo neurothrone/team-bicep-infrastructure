@@ -1,13 +1,17 @@
 trigger: none
 
+pool:
+  vmImage: ubuntu-latest
+
 resources:
   repositories:
+
     - repository: infra
       type: git
       name: team-bicep-infrastructure
       ref: refs/heads/main
            
-    - repository: 
+    - repository: Backend
       type: git
       name: team-bicep-backend
       ref: refs/heads/main
@@ -16,7 +20,7 @@ resources:
           include:
             - main
     
-    - repository: 
+    - repository: Frontend
       type: git
       name: team-bicep-frontend
       ref: refs/heads/main
@@ -26,9 +30,9 @@ resources:
             - main
 
 stages:
+
 - stage: Backend
   displayName: 'Backend'
-  dependsOn: Infra
   jobs:
   - template: DockerBuildAndPush-template.yml@infra
     parameters:
@@ -36,16 +40,15 @@ stages:
       dockerfilePath: 'src/TeamBicep.WebApi/Dockerfile'
       contextPath: 'src/TeamBicep.WebApi'
       imageRepository: 'TeamBicep/Backend'
-     
-      
 
 - stage:
-- template: bicep-infra-create-template.yml@infra
-  parameters:
-    environment: 'prod'
-    serviceConnectionName: 'BicepDeploy'
-    resourceGroupName: 'RG-dersimabbas'
-    useEnvironmentSuffix: true
-    deploymentLocation: 'swedencentral'
-    stageName: 'Infra'
-
+  displayName: 'Build Infra'
+  dependsOn: Backend
+  jobs:
+  - template: bicep-infra-create-template.yml@infra
+    parameters:
+      environment: 'prod'
+      serviceConnectionName: 'biceparmconnection'
+      resourceGroupName: 'RG-dersimabbas'
+      useEnvironmentSuffix: true
+      deploymentLocation: 'swedencentral'
