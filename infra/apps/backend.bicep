@@ -44,6 +44,7 @@ resource acrPull 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(acr.id, pullMi.id, acrPullRoleId)
   scope: acr
   properties: {
+    #disable-next-line use-resource-id-functions
     roleDefinitionId: acrPullRoleId
     principalId: pullMi.properties.principalId
     principalType: 'ServicePrincipal'
@@ -54,6 +55,7 @@ resource kvSecretsUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(kv.id, pullMi.id, kvSecretUserRoleId)
   scope: kv
   properties: {
+    #disable-next-line use-resource-id-functions
     roleDefinitionId: kvSecretUserRoleId
     principalId: pullMi.properties.principalId
     principalType: 'ServicePrincipal'

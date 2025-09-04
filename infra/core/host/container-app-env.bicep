@@ -1,3 +1,6 @@
+// !: --- Imports ---
+import { acrPullRoleId } from '../../shared/roles.bicep'
+
 @description('The location that the Container App Environment will be deployed')
 param location string
 
@@ -12,11 +15,6 @@ param logAnalyticsName string
 
 @description('The tags that will be applied to the Container App Environment')
 param tags object
-
-var acrPullRoleId = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  '7f951dda-4ed3-4680-a7ca-43fe172d538d'
-)
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
   name: logAnalyticsName
@@ -48,8 +46,9 @@ resource acrPullRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(containerRegistry.id, containerAppEnvironment.id, acrPullRoleId)
   scope: containerRegistry
   properties: {
-    principalId: containerAppEnvironment.identity.principalId
+    #disable-next-line use-resource-id-functions
     roleDefinitionId: acrPullRoleId
+    principalId: containerAppEnvironment.identity.principalId
     principalType: 'ServicePrincipal'
   }
 }
