@@ -1,4 +1,4 @@
-
+trigger: none
 parameters:
   - name: serviceConnectionName
     displayName: "Service Connection Name"
