@@ -3,7 +3,7 @@ parameters:
   - name: serviceConnectionName
     displayName: "Service Connection Name"
     type: string
-    default: "BicepDeploy"
+    default: "biceparmconnection"
 
   - name: environment
     displayName: "Environment"
