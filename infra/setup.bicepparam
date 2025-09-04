@@ -2,6 +2,9 @@ using 'main.bicep'
 
 // param appInsightsName =  'appi-team-bicep-prod'
 
+param BackendRevisionSuffix  = ''
+param frontendRevisionSuffix  = ''
+
 param containerAppEnvironmentName = 'cae-team-bicep-prod'
 
 param logAnalyticsWorkspaceName = 'law-team-bicep-prod'
