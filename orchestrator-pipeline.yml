@@ -32,12 +32,14 @@ stages:
 - stage: Backend
   displayName: 'Backend'
   jobs:
+
   - template: DockerBuildAndPush-template.yml@infra
     parameters:
       projectName: 'TeamBicep.WebApi'
       dockerfilePath: 'src/TeamBicep.WebApi/Dockerfile'
       contextPath: 'src/TeamBicep.WebApi'
       imageRepository: 'TeamBicep/Backend'
+      repoAlias: 'Backend'
 
 - stage: Infra
   displayName: 'Build Infra'
