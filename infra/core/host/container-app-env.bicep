@@ -22,6 +22,7 @@ param settings ContainerAppEnvironmentSettingsType
 @description('The tags that will be applied to the Container App Environment')
 param tags object
 
+@description('The Log Analytics workspace that this Container App environment will use')
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
   name: settings.logAnalyticsWorkspaceName
 }

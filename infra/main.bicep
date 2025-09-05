@@ -10,7 +10,14 @@ import { KeyVaultSettingsType } from 'core/security/key-vault.bicep'
 import { BackendSettingsType } from 'apps/backend.bicep'
 import { FrontendSettingsType } from 'apps/frontend.bicep'
 
+
 // !: --- Parameters ---
+@description('Optional frontend overrides (partial allowed)')
+param frontendOverrides object = {}
+
+@description('Optional backend overrides (partial allowed)')
+param backendOverrides object = {}
+
 @description('The location to deploy all resources')
 param location string = resourceGroup().location
 
@@ -96,7 +103,7 @@ module backendModule 'apps/backend.bicep' = {
   name: 'backendModule'
   params: {
     location: location
-    settings: backendSettings
+    settings: union(backendSettings, backendOverrides)
     tags: tags
   }
   dependsOn: [
@@ -111,7 +118,7 @@ module frontendModule 'apps/frontend.bicep' = {
   name: 'frontendModule'
   params: {
     location: location
-    settings: frontendSettings
+    settings: union(frontendSettings, frontendOverrides)
     backendFqdn: backendModule.outputs.fqdn
     tags: tags
   }
@@ -119,6 +126,5 @@ module frontendModule 'apps/frontend.bicep' = {
     containerRegistryModule
     containerAppEnvironmentModule
     keyVaultModule
-    backendModule
   ]
 }

@@ -34,6 +34,7 @@ param backendFqdn string
 @description('The tags that will be applied to the Frontend UI')
 param tags object
 
+
 resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2024-08-02-preview' existing = {
   name: settings.containerAppEnvironmentName
 }
