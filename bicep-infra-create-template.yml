@@ -55,8 +55,6 @@ parameters:
     type: string
     default: $(Build.BuildId)
 
-
-
 jobs:
   - job:
     displayName: "Deploy Azure IaC with Bicep"
@@ -75,5 +73,6 @@ jobs:
           deploymentName: $(Build.BuildNumber)
           deploymentMode: "Incremental"
           overrideParameters: >
-            -backendOverrides '{\"backendImageName\": \"${{ parameters.backendImage }}\", \"backendRevisionSuffix\": \"${{ parameters.backendRevisionSuffix }}\"}'
-            -frontendOverrides '{\"frontendImageName\": \"${{ parameters.frontendImage }}\", \"frontendRevisionSuffix\": \"${{ parameters.frontendRevisionSuffix }}\"}'
+            -frontendOverrides {"frontendImageName":"${{ parameters.frontendImage }}","frontendRevisionSuffix":"${{ parameters.frontendRevisionSuffix }}"}
+            -backendOverrides  {"backendImageName":"${{ parameters.backendImage }}","backendRevisionSuffix":"${{ parameters.backendRevisionSuffix }}"}
+
