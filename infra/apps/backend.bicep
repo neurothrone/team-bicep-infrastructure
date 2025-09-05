@@ -31,11 +31,6 @@ param settings BackendSettingsType
 @description('The tags that will be applied to the Backend Container App')
 param tags object
 
-@description('Optional backend overrides (partial allowed)')
-param backendOverrides object = {}
-
-var effectiveBackend  = union(settings,  backendOverrides)
-
 resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2024-08-02-preview' existing = {
   name: settings.containerAppEnvironmentName
 }
@@ -96,11 +91,11 @@ resource backendContainerApp 'Microsoft.App/containerApps@2024-08-02-preview' = 
       ]
     }
     template: {
-      revisionSuffix: effectiveBackend.backendRevisionSuffix
+      revisionSuffix: settings.backendRevisionSuffix
       containers: [
         {
           name: settings.backendContainerAppName
-          image: effectiveBackend.backendImageName
+          image: settings.backendImageName
           env: [
             {
               name: 'ASPNETCORE_ENVIRONMENT'
