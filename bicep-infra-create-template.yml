@@ -80,6 +80,6 @@ jobs:
               "backendRevisionSuffix": "${{ parameters.backendRevisionSuffix }}"
               }'
             -frontendOverrides '{
-              "frontendImageName": "$ {{ parameters.frontendImage }}"
+              "frontendImageName": "${{ parameters.frontendImage }}"
               "frontendRevisionSuffix": "${{ parameters.frontendRevisionSuffix }}"
               }'
