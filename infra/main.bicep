@@ -70,6 +70,10 @@ module containerAppEnvironmentModule 'core/host/container-app-env.bicep' = {
     settings: containerAppEnvironmentSettings
     tags: tags
   }
+  dependsOn: [
+    logAnalyticsModule
+    containerRegistryModule
+  ]
 }
 
 module backendModule 'apps/backend.bicep' = {
@@ -79,6 +83,11 @@ module backendModule 'apps/backend.bicep' = {
     settings: backendSettings
     tags: tags
   }
+  dependsOn: [
+    containerRegistryModule
+    containerAppEnvironmentModule
+    keyVaultModule
+  ]
 }
 
 module frontendModule 'apps/frontend.bicep' = {
@@ -89,4 +98,10 @@ module frontendModule 'apps/frontend.bicep' = {
     backendFqdn: backendModule.outputs.fqdn
     tags: tags
   }
+  dependsOn: [
+    containerRegistryModule
+    containerAppEnvironmentModule
+    keyVaultModule
+    backendModule
+  ]
 }
