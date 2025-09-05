@@ -51,7 +51,7 @@ parameters:
     type: string
     default: $(Build.BuildId)
 
-  - name: BackendRevisionSuffix
+  - name: backendRevisionSuffix
     type: string
     default: $(Build.BuildId)
 
@@ -78,4 +78,4 @@ jobs:
            -backendImage ${{ parameters.backendImage }}
            -frontendImage ${{ parameters.frontendImage }}
            -frontendRevisionSuffix ${{ parameters.frontendRevisionSuffix }}
-           -BackendRevisionSuffix ${{ parameters.BackendRevisionSuffix }}
+           -backendRevisionSuffix ${{ parameters.backendRevisionSuffix }}
