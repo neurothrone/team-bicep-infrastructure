@@ -6,7 +6,6 @@ param logAnalyticsSettings = {
 
 param containerRegistrySettings = {
   containerRegistryName: 'crteambicepprod'
-  usePlaceHolderImage: true
 }
 
 param containerAppEnvironmentSettings = {
@@ -18,6 +17,8 @@ param containerAppEnvironmentSettings = {
 param keyVaultSettings = {
   keyVaultName: 'kv-teambicepprod'
 }
+
+param usePlaceHolderImage = true
 
 param backendSettings = {
   backendContainerAppName: 'team-bicep-backend'
