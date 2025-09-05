@@ -75,11 +75,5 @@ jobs:
           deploymentName: $(Build.BuildNumber)
           deploymentMode: "Incremental"
           overrideParameters: >
-            -backendOverrides '{
-              "backendImageName": "${{ parameters.backendImage }}",
-              "backendRevisionSuffix": "${{ parameters.backendRevisionSuffix }}"
-              }'
-            -frontendOverrides '{
-              "frontendImageName": "${{ parameters.frontendImage }}"
-              "frontendRevisionSuffix": "${{ parameters.frontendRevisionSuffix }}"
-              }'
+            -backendOverrides '{\"backendImageName\": \"${{ parameters.backendImage }}\", \"backendRevisionSuffix\": \"${{ parameters.backendRevisionSuffix }}\"}'
+            -frontendOverrides '{\"frontendImageName\": \"${{ parameters.frontendImage }}\", \"frontendRevisionSuffix\": \"${{ parameters.frontendRevisionSuffix }}\"}'
