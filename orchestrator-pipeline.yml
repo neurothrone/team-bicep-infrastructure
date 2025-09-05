@@ -72,4 +72,4 @@ stages:
       backendImage: $(backendRepo):$(tags)
       frontendImage: $(frontendRepo):$(tags)
       frontendRevisionSuffix: $(Build.BuildId)
-      BackendRevisionSuffix: $(Build.BuildId)
+      backendRevisionSuffix: $(Build.BuildId)
