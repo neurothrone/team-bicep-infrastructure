@@ -26,6 +26,9 @@ param containerAppEnvironmentSettings ContainerAppEnvironmentSettingsType
 @description('The settings for the Key Vault that will be deployed')
 param keyVaultSettings KeyVaultSettingsType
 
+@description('Whether to use a placeholder image in the Container Registry for initial setup')
+param usePlaceHolderImage bool
+
 @description('The settings for the Backend Container App that will be deployed')
 param backendSettings BackendSettingsType
 
@@ -76,6 +79,19 @@ module containerAppEnvironmentModule 'core/host/container-app-env.bicep' = {
   ]
 }
 
+@description('Module to import a placeholder image into the Container Registry if specified')
+module acrImportImage 'br/public:deployment-scripts/import-acr:3.0.1' = if (usePlaceHolderImage) {
+  name: 'importContainerImageModule'
+  params: {
+    location: location
+    acrName: containerRegistrySettings.containerRegistryName
+    images: array('mcr.microsoft.com/azuredocs/containerapps-helloworld:latest')
+  }
+  dependsOn: [
+    containerRegistryModule
+  ]
+}
+
 module backendModule 'apps/backend.bicep' = {
   name: 'backendModule'
   params: {
@@ -87,6 +103,7 @@ module backendModule 'apps/backend.bicep' = {
     containerRegistryModule
     containerAppEnvironmentModule
     keyVaultModule
+    acrImportImage
   ]
 }
 
