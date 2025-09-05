@@ -5,13 +5,13 @@ param location string
 param appInsightsName string
 
 @description('The name of the Log Analytics workspace that will be linked to this Application Insights workspace.')
-param logAnalyticsName string
+param logAnalyticsWorkspaceName string
 
 @description('The tags that will be applied to the Application Insights workspace')
 param tags object
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
-  name: logAnalyticsName
+  name: logAnalyticsWorkspaceName
 }
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
