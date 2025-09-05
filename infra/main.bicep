@@ -12,12 +12,6 @@ import { FrontendSettingsType } from 'apps/frontend.bicep'
 
 
 // !: --- Parameters ---
-@description('Optional frontend overrides (partial allowed)')
-param frontendOverrides object = {}
-
-@description('Optional backend overrides (partial allowed)')
-param backendOverrides object = {}
-
 @description('The location to deploy all resources')
 param location string = resourceGroup().location
 
@@ -41,6 +35,12 @@ param backendSettings BackendSettingsType
 
 @description('The settings for the Frontend Container App that will be deployed')
 param frontendSettings FrontendSettingsType
+
+@description('Optional frontend overrides (partial allowed)')
+param frontendOverrides object = {}
+
+@description('Optional backend overrides (partial allowed)')
+param backendOverrides object = {}
 
 @description('Tags to be applied to all resources')
 param tags object = {}
